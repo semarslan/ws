@@ -22,6 +22,7 @@ public class WsApplication {
 				user.setDisplayName("display1");
 				user.setPassword("P4ssword");
 				userService.save(user);
+
 		};
 	}
 }
