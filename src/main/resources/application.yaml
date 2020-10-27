@@ -1,0 +1,25 @@
+#spring:
+#  datasource:
+#   url: jdbc:h2:./devdb
+#jpa:
+# hibernate:
+#  ddl-auto: update
+
+# commentliyken database artık memory mode'da çalışacak.
+
+
+spring:
+  datasource:
+    url: jdbc:h2:./mem:testdb
+
+  jpa:
+    properties:
+      javax:
+        persistence:
+          validation:
+            mode: none
+
+#DEBUG için
+#logging:
+#  level:
+#    org.spring.framework: DEBUG
