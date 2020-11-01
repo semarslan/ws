@@ -1,11 +1,15 @@
 package com.hoaxify.ws.user;
 
+import com.hoaxify.ws.user.vm.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import com.hoaxify.ws.shared.GenericResponse;
 
 import javax.validation.Valid;
+
 
 @RestController
 public class UserController {
@@ -54,5 +58,10 @@ public class UserController {
 		//return new GenericResponse("user created");
 
 		return  new GenericResponse("user created");
+	}
+
+	@GetMapping("/api/1.0/users")
+	Page<UserVM> getUsers(Pageable page) {
+		return userService.getUsers(page).map(UserVM::new);
 	}
 }
