@@ -1,5 +1,6 @@
 package com.hoaxify.ws.user;
 
+import com.hoaxify.ws.shared.CurrentUser;
 import com.hoaxify.ws.user.vm.UserVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,7 +62,7 @@ public class UserController {
 	}
 
 	@GetMapping("/api/1.0/users")
-	Page<UserVM> getUsers(Pageable page) {
-		return userService.getUsers(page).map(UserVM::new);
+	Page<UserVM> getUsers(Pageable page, @CurrentUser User user) {
+		return userService.getUsers(page, user).map(UserVM::new);
 	}
 }
