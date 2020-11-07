@@ -1,6 +1,7 @@
 package com.hoaxify.ws.user;
 
 import com.hoaxify.ws.error.NotFoundException;
+import com.hoaxify.ws.user.vm.UserUpdateVm;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -47,5 +48,11 @@ public class UserService {
             throw new NotFoundException();
         }
         return inDB;
+    }
+
+    public User updateUser(String username, UserUpdateVm updatedUser) {
+        User inDB = getByUsername(username);
+        inDB.setDisplayName(updatedUser.getDisplayName());
+        return userRepository.save(inDB);
     }
 }
