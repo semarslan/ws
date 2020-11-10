@@ -20,22 +20,16 @@ public class UserService {
     PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        //super();
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public void save(User user) {
-//		String encryptedPass = this.passwordEncoder.encode(user.getPassword());
-//		user.setPassword(encryptedPass);
-
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     public Page<User> getUsers(Pageable page, User user) {
-//        Pageable page = PageRequest.of(currentPage, pageSize);
-//        return userRepository.findAll(page);
         if (user != null) {
             return userRepository.findByUsernameNot(user.getUsername(), page);
         }
@@ -53,6 +47,9 @@ public class UserService {
     public User updateUser(String username, UserUpdateVm updatedUser) {
         User inDB = getByUsername(username);
         inDB.setDisplayName(updatedUser.getDisplayName());
+        if(updatedUser.getImage() != null) {
+            inDB.setImage(updatedUser.getImage());
+        }
         return userRepository.save(inDB);
     }
 }
