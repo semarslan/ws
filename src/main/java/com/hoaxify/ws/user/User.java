@@ -36,7 +36,6 @@ public class User implements UserDetails {
 	//@JsonIgnore requesti de kapatıyor
 	private String password;
 
-	@Lob
 	private String image;
 
 	@Override
