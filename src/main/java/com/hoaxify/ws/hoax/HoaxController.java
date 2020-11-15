@@ -19,7 +19,7 @@ public class HoaxController {
     HoaxService hoaxService;
 
     @PostMapping("/hoaxes")
-    public GenericResponse saveHoax(@RequestBody Hoax hoax) {
+    public GenericResponse saveHoax(@Valid @RequestBody Hoax hoax) {
         hoaxService.save(hoax);
         return new GenericResponse("Hoax is saved");
     }
