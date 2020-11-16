@@ -21,7 +21,7 @@ public class WsApplication {
 
 	@Bean
 	@Profile("dev")
-	CommandLineRunner createInitialUsers(UserService userService) {
+	CommandLineRunner createInitialUsers(UserService userService, HoaxService hoaxService) {
 		return (args) -> {
 			for(int i = 1; i<=25; i++) {
 				User user = new User();
@@ -31,7 +31,11 @@ public class WsApplication {
 				userService.save(user);
 
 			}
-
+			for (int i =1 ; i<=50; i++) {
+				Hoax hoax = new Hoax();
+				hoax.setContent("hoax - " + 1);
+				hoaxService.save(hoax);
+			}
 		};
 	}
 }
