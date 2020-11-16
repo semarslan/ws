@@ -21,4 +21,5 @@ public class Hoax {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
+
 }
