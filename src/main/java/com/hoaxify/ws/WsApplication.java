@@ -33,7 +33,7 @@ public class WsApplication {
 			}
 			for (int i =1 ; i<=50; i++) {
 				Hoax hoax = new Hoax();
-				hoax.setContent("hoax - " + 1);
+				hoax.setContent("hoax - " + i);
 				hoaxService.save(hoax);
 			}
 		};
