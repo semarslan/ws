@@ -17,7 +17,7 @@ import java.util.Collection;
 @Table(name = "users")
 public class User implements UserDetails {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy =  GenerationType.IDENTITY)
 	private long id;
 
 	@NotNull(message = "{hoaxify.constraints.username.NotNull.message}")
