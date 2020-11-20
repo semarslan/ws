@@ -53,16 +53,24 @@ public class HoaxController {
 
     @GetMapping("/users/{username}/hoaxes")
     Page<HoaxVM> getUserHoaxes(@PathVariable String username,
-                               @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+                               @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page){
 
         return hoaxService.getHoaxesOfUser(username, page).map(HoaxVM::new);
     }
 
     @GetMapping("/users/{username}/hoaxes/{id:[0-9]+}")
-    Page<HoaxVM> getUserHoaxesRelative(@PathVariable long id,
+    ResponseEntity<?> getUserHoaxesRelative(@PathVariable long id,
                                        @PathVariable String username,
-                                       @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page) {
+                                       @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable page,
+                                       @RequestParam(name = "count", required = false, defaultValue = "false") boolean count) {
 
-        return hoaxService.getOldHoaxesOfUser(id, username, page).map(HoaxVM::new);
+        if (count) {
+            long newUserHoaxCount = hoaxService.getUserNewHoaxesCount(id, username);
+            Map<String, Long> response = new HashMap<>();
+            response.put("content", newUserHoaxCount);
+            return ResponseEntity.ok(response);
+        }
+
+        return ResponseEntity.ok(hoaxService.getOldHoaxesOfUser(id, username, page).map(HoaxVM::new));
     }
 }
