@@ -27,9 +27,6 @@ public class HoaxService {
     }
 
     public Page<Hoax> list(Pageable page) {
-       /* if(hoax != null) {
-            return hoaxRepository.findByHoaxNot(hoax.getContent(), page);
-        }*/
         return hoaxRepository.findAll(page);
     }
 
@@ -38,4 +35,7 @@ public class HoaxService {
         return hoaxRepository.findByUser(inDB, page);
     }
 
+    public Page<Hoax> getOldHoaxes(long id, Pageable page) {
+        return hoaxRepository.findByIdLessThan(id, page);
+    }
 }
