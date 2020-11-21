@@ -4,9 +4,11 @@ import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.stream.DoubleStream;
 
 @Service
@@ -48,8 +50,17 @@ public class HoaxService {
         return hoaxRepository.countByIdGreaterThan(id);
     }
 
-    public long getUserNewHoaxesCount(long id, String username) {
+    public long getNewHoaxesCountofUser(long id, String username) {
         User inDB = userService.getByUsername(username);
         return hoaxRepository.countByIdGreaterThanAndUser(id, inDB);
+    }
+
+    public List<Hoax> getNewHoaxes(long id, Sort sort) {
+        return hoaxRepository.findByIdGreaterThan(id, sort);
+    }
+
+    public List<Hoax> getNewHoaxesofUser(long id, String username, Sort sort) {
+        User inDB = userService.getByUsername(username);
+        return hoaxRepository.findByIdGreaterThanAndUser(id, inDB, sort);
     }
 }
