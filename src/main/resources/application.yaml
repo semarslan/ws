@@ -40,7 +40,14 @@ spring:
 hoaxify:
   upload-path: storage-dev
 
-  # h2:
-  #    console:
-  #      enabled: true
-  #      path: /h2-console
+---
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+
+      # h2:
+      #    console:
+      #      enabled: true
+      #      path: /h2-console
