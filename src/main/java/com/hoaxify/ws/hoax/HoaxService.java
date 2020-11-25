@@ -1,5 +1,8 @@
 package com.hoaxify.ws.hoax;
 
+import com.hoaxify.ws.file.FileAttachment;
+import com.hoaxify.ws.file.FileAttachmentRepository;
+import com.hoaxify.ws.hoax.vm.HoaxSubmitVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
 import org.springframework.data.domain.Page;
@@ -14,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.DoubleStream;
 
 @Service
@@ -21,16 +25,30 @@ public class HoaxService {
 
     HoaxRepository hoaxRepository;
     UserService userService;
+    FileAttachmentRepository fileAttachmentRepository;
 
-    HoaxService(HoaxRepository hoaxRepository, UserService userService) {
+    HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
         this.hoaxRepository = hoaxRepository;
         this.userService = userService;
+        this.fileAttachmentRepository = fileAttachmentRepository;
     }
 
-    public void save(Hoax hoax, User user) {
+    public void save(HoaxSubmitVM hoaxSubmitVM, User user) {
+        Hoax hoax = new Hoax();
+        hoax.setContent(hoaxSubmitVM.getContent());
         hoax.setDate(new Date());
         hoax.setUser(user);
         hoaxRepository.save(hoax);
+        Optional<FileAttachment> optionalFileAttachment = fileAttachmentRepository.findById(hoaxSubmitVM.getAttachmentId());
+
+        /*
+        Hoax ile file ilişkili save işlemi
+        */
+        if (optionalFileAttachment.isPresent()) {
+            FileAttachment fileAttachment = optionalFileAttachment.get();
+            fileAttachment.setHoax(hoax);
+            fileAttachmentRepository.save(fileAttachment);
+        }
     }
 
     public Page<Hoax> list(Pageable page) {
