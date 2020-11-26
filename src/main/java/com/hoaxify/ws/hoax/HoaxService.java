@@ -2,6 +2,7 @@ package com.hoaxify.ws.hoax;
 
 import com.hoaxify.ws.file.FileAttachment;
 import com.hoaxify.ws.file.FileAttachmentRepository;
+import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.hoax.vm.HoaxSubmitVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
@@ -21,11 +22,14 @@ public class HoaxService {
     HoaxRepository hoaxRepository;
     UserService userService;
     FileAttachmentRepository fileAttachmentRepository;
+    FileService fileService;
 
-    HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository) {
+    HoaxService(HoaxRepository hoaxRepository, UserService userService, FileAttachmentRepository fileAttachmentRepository,
+                FileService fileService) {
         this.hoaxRepository = hoaxRepository;
         this.userService = userService;
         this.fileAttachmentRepository = fileAttachmentRepository;
+        this.fileService = fileService;
     }
 
     public void save(HoaxSubmitVM hoaxSubmitVM, User user) {
@@ -102,6 +106,11 @@ public class HoaxService {
     }
 
     public void delete(long id) {
+        Hoax inDB = hoaxRepository.getOne(id);
+        if (inDB.getFileAttachment() != null) {
+            String fileName = inDB.getFileAttachment().getName();
+            fileService.deleteAttachmentFile(fileName);
+        }
         hoaxRepository.deleteById(id);
     }
 }

@@ -1,6 +1,5 @@
 package com.hoaxify.ws;
 
-import com.hoaxify.ws.hoax.Hoax;
 import com.hoaxify.ws.hoax.HoaxService;
 import com.hoaxify.ws.hoax.vm.HoaxSubmitVM;
 import com.hoaxify.ws.user.User;
@@ -8,11 +7,9 @@ import com.hoaxify.ws.user.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
-import java.util.Date;
 
 @SpringBootApplication
 public class WsApplication {
