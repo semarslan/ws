@@ -36,7 +36,7 @@ public class AuthService {
         UserVM userVM = new UserVM(inDB);
         String token = Jwts.builder().setSubject("" + inDB.getId()).signWith(SignatureAlgorithm.HS512, "my-app-secret").compact();
         AuthResponse response = new AuthResponse();
-        response.setUserVM(userVM);
+        response.setUser(userVM);
         response.setToken(token);
         return response;
     }

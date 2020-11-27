@@ -8,5 +8,5 @@ public class AuthResponse {
 
     private String token;
 
-    private UserVM userVM;
+    private UserVM user;
 }
