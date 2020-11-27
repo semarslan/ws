@@ -6,7 +6,6 @@ import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.hoax.vm.HoaxSubmitVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,20 +25,10 @@ public class HoaxService {
     FileService fileService;
 
     HoaxService(HoaxRepository hoaxRepository, FileAttachmentRepository fileAttachmentRepository,
-                FileService fileService) {
+                FileService fileService, UserService userService) {
         this.hoaxRepository = hoaxRepository;
         this.fileAttachmentRepository = fileAttachmentRepository;
         this.fileService = fileService;
-    }
-
-
-    /**
-     * @param userService
-     * user service constractor'dan kaldırıldı. Bunun yerine setter injection yaptık. Çünkü
-     * user service'te de hoax service çağırıldı. Spring hata verdi.
-     */
-    @Autowired
-    public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
@@ -123,17 +112,5 @@ public class HoaxService {
             fileService.deleteAttachmentFile(fileName);
         }
         hoaxRepository.deleteById(id);
-    }
-
-    /**
-     * @param username
-     *
-     * silinen userın hoaxlarını da silebilmek için bu service oluşturuldu.
-     */
-    public void deleteHoaxesOfUser(String username) {
-        User inDB = userService.getByUsername(username);
-        Specification<Hoax> userOwned = userIs(inDB);
-        List<Hoax> hoaxesToBeRemoved = hoaxRepository.findAll(userOwned);
-        hoaxRepository.deleteAll(hoaxesToBeRemoved);
     }
 }
