@@ -2,7 +2,9 @@ package com.hoaxify.ws.user;
 
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
+import com.hoaxify.ws.hoax.HoaxService;
 import com.hoaxify.ws.user.vm.UserUpdateVm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,10 +22,21 @@ public class UserService {
 
     FileService fileService;
 
+    HoaxService hoaxService;
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileService = fileService;
+    }
+
+    /**
+     * @param hoaxService
+     * HoaxService setter injeciton edildi.
+     * iki service'in biribirne bağlanması için.
+     */
+    @Autowired
+    public void setHoaxService(HoaxService hoaxService) {
+        this.hoaxService = hoaxService;
     }
 
     public void save(User user) {
@@ -60,5 +73,11 @@ public class UserService {
             fileService.deleteProfilelImage(oldImageName);
         }
         return userRepository.save(inDB);
+    }
+
+    public void deleteUser(String username) {
+        hoaxService.deleteHoaxesOfUser(username);
+        User inDB = userRepository.findByUsername(username);
+        userRepository.delete(inDB);
     }
 }
