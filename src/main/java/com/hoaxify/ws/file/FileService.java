@@ -48,7 +48,6 @@ public class FileService {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-
     private void deleteFile(Path path) {
         try {
             Files.deleteIfExists(path);
