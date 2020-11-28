@@ -4,10 +4,17 @@ import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserRepository;
 import com.hoaxify.ws.user.UserService;
 import com.hoaxify.ws.user.vm.UserVM;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.hibernate.proxy.HibernateProxy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.Date;
 
 @Service
 public class AuthService {
@@ -34,10 +41,31 @@ public class AuthService {
         }
 
         UserVM userVM = new UserVM(inDB);
-        String token = Jwts.builder().setSubject("" + inDB.getId()).signWith(SignatureAlgorithm.HS512, "my-app-secret").compact();
+
+        Date expiresAt = new Date(System.currentTimeMillis() + 10*1000); //Token geçerlilik süresi
+        String token = Jwts.builder().setSubject("" + inDB.getId())
+                .signWith(SignatureAlgorithm.HS512, "my-app-secret")
+                .setExpiration(expiresAt)
+                .compact();
         AuthResponse response = new AuthResponse();
         response.setUser(userVM);
         response.setToken(token);
         return response;
+    }
+
+    @Transactional
+    public UserDetails getUserDetails(String token) {
+        JwtParser parser = Jwts.parser().setSigningKey("my-app-secret");
+        try{
+            parser.parse(token);
+            Claims claims= parser.parseClaimsJws(token).getBody();
+            long userId = new Long(claims.getSubject());
+            User user = userRepository.getOne(userId);
+            User actualUser = (User)((HibernateProxy)user).getHibernateLazyInitializer().getImplementation();
+            return actualUser;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
