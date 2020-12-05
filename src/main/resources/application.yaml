@@ -1,12 +1,3 @@
-#spring:
-#  datasource:
-#   url: jdbc:h2:./devdb
-#jpa:
-# hibernate:
-#  ddl-auto: update
-
-# commentliyken database artık memory mode'da çalışacak.
-
 spring:
   datasource:
     platform: postgres
@@ -15,6 +6,7 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
     initialization-mode: always
+
   data:
     web:
       pageable:
@@ -30,15 +22,32 @@ spring:
     show-sql: true
     generate-ddl: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+  profiles:
+    active:
+      - production
+      - dev
+hoaxify:
+  upload-path: picture-storage
+---
+spring:
+  profiles: production
+hoaxify:
+  upload-path: storage-production
+---
+spring:
+  profiles: dev
+hoaxify:
+  upload-path: storage-dev
 
-  #
-  #  h2:
-  #    console:
-  #      enabled: true
-  #      path: /h2-console
+---
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
 
-#DEBUG için
-#logging:
-#  level:
-#    org.spring.framework: DEBUG
+
+      # h2:
+      #    console:
+      #      enabled: true
+      #      path: /h2-console

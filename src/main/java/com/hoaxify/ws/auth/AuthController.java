@@ -1,23 +1,24 @@
 package com.hoaxify.ws.auth;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.hoaxify.ws.shared.CurrentUser;
-import com.hoaxify.ws.user.User;
-import com.hoaxify.ws.user.UserRepository;
-import com.hoaxify.ws.user.vm.UserVM;
+import com.hoaxify.ws.shared.GenericResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class AuthController {
+
     @Autowired
-    UserRepository userRepository;
-    //private static final Logger log = LoggerFactory.getLogger(AuthController.class);
+    AuthService authService;
 
     @PostMapping("/api/1.0/auth")
-    UserVM handleAuthentication(@CurrentUser User user) {
+    AuthResponse handleAuthentication(@RequestBody Credentials credentials) {
+        return authService.authenticate(credentials);
+    }
 
-        return new UserVM(user);
+    @PostMapping("/api/1.0/logout")
+    GenericResponse handleLogout(@RequestHeader(name = "Authorization") String authorization) {
+        String token = authorization.substring(7);
+        authService.clearToken(token);
+        return new GenericResponse("Logout success");
     }
 }

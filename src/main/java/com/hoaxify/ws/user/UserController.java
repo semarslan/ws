@@ -47,9 +47,23 @@ public class UserController {
 	}
 
 	@PutMapping("/users/{username}")
-	@PreAuthorize("#username == principal.username")
-	UserVM updateUser(@RequestBody UserUpdateVm updatedUser, @PathVariable String username, @CurrentUser User loggedInUser){
+	@PreAuthorize("#username == principal.username") //user login mi değil mi kontrolü, cevabı 403
+	UserVM updateUser(@Valid @RequestBody UserUpdateVm updatedUser, @PathVariable String username, @CurrentUser User loggedInUser){
 		User user = userService.updateUser(username, updatedUser);
 		return new UserVM(user);
+	}
+
+	/**
+	 * @param username
+	 * @return message
+	 *
+	 *
+	 * user silme
+	 */
+	@DeleteMapping("/users/{username}")
+	@PreAuthorize("#username == principal.username")
+	GenericResponse deleteUser(@PathVariable String username) {
+		userService.deleteUser(username);
+		return new GenericResponse("User is removed");
 	}
 }

@@ -4,20 +4,15 @@ import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVm;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.*;
-import java.util.Base64;
-import java.util.List;
 
 @Service
 public class UserService {
 
-    //@Autowired
     UserRepository userRepository;
 
     PasswordEncoder passwordEncoder;
@@ -54,14 +49,22 @@ public class UserService {
         User inDB = getByUsername(username);
         inDB.setDisplayName(updatedUser.getDisplayName());
         if(updatedUser.getImage() != null) {
-            //inDB.setImage(updatedUser.getImage());
+            String oldImageName = inDB.getImage();
             try {
                 String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
                 inDB.setImage(storedFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            fileService.deleteProfilelImage(oldImageName);
         }
         return userRepository.save(inDB);
+    }
+
+    public void deleteUser(String username) {
+        User inDB = userRepository.findByUsername(username);
+
+        fileService.deleteAllStoredFilesForUser(inDB);
+        userRepository.delete(inDB);
     }
 }
